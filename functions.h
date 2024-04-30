@@ -9,7 +9,8 @@ using namespace std;
 
 struct Data {
 	unsigned int price, amount;
-	string author, title;
+	char author[32];
+	char title[32];
 };
 
 
@@ -22,5 +23,5 @@ void Copy(Data* (&d_n), Data* (&d_o), int n); //копи€ данных
 void Copy(Data& d_n, Data& d_o); //копи€ данных элемента
 void AddData(Data* (&d), int& n); //ƒобавить данные
 void DataSorting(Data* d, int n);//—ортировка данных
-void SavingData(Data* d, int n, string fileName);//сохранение данных
+void SavingData(Data* d, int n, char* fileName);//сохранение данных
 

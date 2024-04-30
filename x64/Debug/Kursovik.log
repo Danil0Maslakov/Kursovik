@@ -1,4 +1,2 @@
 ﻿  functions.cpp
-D:\Kursovik\Kursovik\functions.cpp(7,53): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-D:\Kursovik\Kursovik\functions.cpp(15,55): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
   Kursovik.vcxproj -> D:\Kursovik\x64\Debug\Kursovik.exe

@@ -22,7 +22,7 @@ int main() {
 	Menu();
 
 	int _actions, amountOfData = 0;
-	string fileName;
+	char fileName[16];
 	Data* d = new Data[amountOfData];
 
 	while (_stateMenu != 0) {

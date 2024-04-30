@@ -1,18 +1,30 @@
 #include "functions.h"
 #include<algorithm>
 
+#pragma warning(disable:4996)
+int StrLen(char *str,int i, Data* d) {
+	char* iter = (char*)d[i].title;
+	int ret = 0;
+	while (*iter) {
+		iter++;
+		ret++;
+	}
+	int ans = ret;
+	return ans;
+}
 int m_NazvLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (d[i].title.size() > sz) { sz = d[i].title.size(); }
+		if (StrLen((char*)d[i].title,i,d)> sz) { sz = StrLen((char*)d[i].title, i, d); }
 	}
 	return sz;
+	
 }
 
 int m_AuthLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (d[i].author.size() > sz) { sz = d[i].author.size(); }
+		if (StrLen((char*)d[i].author, i, d) > sz) { sz = StrLen((char*)d[i].author, i, d); }
 	}
 	return sz;
 }
@@ -20,8 +32,9 @@ int m_AuthLen(Data* d, int n) {
 int m_PricLen(Data* d, int n) {
 	int sz = 0, temp = 0;
 	for (int i{}; i < n; i++) {
-		while (d[i].price != 0) {
-			d[i].price /= 10;
+		int tempd = d[i].price;
+		while (tempd != 0) {
+			tempd /= 10;
 			temp++;
 		}
 		if (temp > sz) { sz = temp; }
@@ -34,8 +47,9 @@ int m_PricLen(Data* d, int n) {
 int m_AmouLen(Data* d, int n) {
 	int sz = 0, temp = 0;
 	for (int i{}; i < n; i++) {
-		while (d[i].amount != 0) {
-			d[i].amount /= 10;
+		int tempd = d[i].amount;
+		while (tempd != 0) {
+			tempd /= 10;
 			temp++;
 		}
 		if (temp > sz) { sz = temp; }
@@ -53,9 +67,11 @@ void DataEntry(Data* (&d), int& n) {
 	for (int i = 0; i < n; i++) {
 		cout << "Введите название: ";
 		cin >> d[i].title;
+		//cin.getline(d[i].title,32);
 
 		cout << "Введите имя автора: ";
 		cin >> d[i].author;
+		//cin.getline(d[i].author, 32);
 
 		cout << "Введите количество: ";
 		cin >> d[i].amount;
@@ -65,6 +81,7 @@ void DataEntry(Data* (&d), int& n) {
 
 		cout << "----------------------------------" << endl;
 	}
+
 }
 
 void ReadingData(Data* (&d), int& n, string fileName) {
@@ -91,44 +108,67 @@ void ReadingData(Data* (&d), int& n, string fileName) {
 }
 
 void Print(Data* d, int n) {
-	for (int i = 0; i < n; i++) {
 		int pr_size=0, am_size=0, ar=0;
 		int arr_size = sizeof(d) / sizeof(d[0]);
 		while (arr_size != 0) {
 			arr_size /= 10;
 			ar++;
 		}
-
+	for (int i = 0; i < n; i++) {
 		
 
 		
-		int op = 0;
-		int nazv_size = 0;
-		for (int i = 0; i < n; i++) {
 
+		int risAm = 6;
+		if (m_AmouLen(d, n) > 10) { risAm += (m_AmouLen(d,n)*3)/2; }
+		if (m_AmouLen(d, n) <= 10) { risAm += 10; }
+		if (m_PricLen(d, n) > 4) { risAm += (m_PricLen(d, n)*3)/2; }
+		if (m_PricLen(d, n) <= 4) { risAm += 4; }
+		if (m_AuthLen(d, n) > 5) { risAm += m_AuthLen(d, n); }
+		if (m_AuthLen(d, n) <= 5) { risAm += 5; }
+		if (m_NazvLen(d, n) > 8) { risAm += (m_NazvLen(d, n)*3)/2; }
+		if (m_NazvLen(d, n) <= 8) { risAm += 8; }
+		if (ar > 1) { risAm += (ar*3)/2; }
+		if(ar == 1){risAm+=1;}
+		int k = 0;
+		for (int i = 0; i <=risAm; i++) {
+			cout << "-"; k++;
 		}
+		cout << k;
 		
-		for (int i = 0; i <=(m_AmouLen(d,n)+ m_PricLen(d,n) + m_AuthLen(d,n)+ m_NazvLen(d,n)); i++) {
-			cout << "-";
-			op++;
-		}
-		cout << op;
 		//заголовок индекса
 		cout << endl;
 		cout << "|";
-		for (int i = 0; i < ar/2; i++) { cout << ' '; }
+		for (int i = 0; i < ar / 2; i++) { cout << ' '; }
 		cout << "№";
 		for (int i = 0; i < ar / 2; i++) { cout << ' '; }
 		cout << "|";
 
 		//заголовок названия
+		
 		for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
 		cout << "Название";
 		for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
 		cout << "|";
-
 		
+		for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "Автор";
+		for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "|";
+		
+		for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "Количество";
+		for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "|";
 
+		for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "Цена";
+		for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		cout << "|" << endl;
+
+		for (int i = 0; i <= risAm; i++) {
+			cout << "-";
+		}
 		/*cout << "Данные №" << i + 1 << ":"<<endl;
 		
 		cout << "Название: " << d[i].title<<endl;
@@ -399,12 +439,12 @@ void DataSorting(Data* d, int n) {
 
 void Copy(Data& d_n, Data& d_o){
 	d_n.amount = d_o.amount;
-	d_n.author = d_o.author;
+	strncpy(d_n.author, d_o.author, 32);
 	d_n.price = d_o.price;
-	d_n.title = d_o.title;
+	strncpy(d_n.title, d_o.title, 32);
 }
 
-void SavingData(Data* d, int n, string fileName) {
+void SavingData(Data* d, int n, char* fileName) {
 	ofstream record(fileName, ios::out);
 
 	if(record){
