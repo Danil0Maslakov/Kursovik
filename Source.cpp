@@ -21,6 +21,7 @@ void Menu() {
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
+	system("chcp 1251");
 	Menu();
 
 	int _actions, amountOfData = 0;
