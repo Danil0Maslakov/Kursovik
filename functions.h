@@ -24,4 +24,12 @@ void Copy(Data& d_n, Data& d_o); //копи€ данных элемента
 void AddData(Data* (&d), int& n); //ƒобавить данные
 void DataSorting(Data* d, int n);//—ортировка данных
 void SavingData(Data* d, int n, char* fileName);//сохранение данных
-
+void dSwap(Data& d_n, Data& d_o);  //помен€ть местами данные в структуре
+int TitleLen(char* str, int i, Data* d); 
+int AuthLen(char* str, int i, Data* d);
+int m_NazvLen(Data* d, int n);
+int m_AuthLen(Data* d, int n);
+int m_PricLen(Data* d, int n);
+int m_AmouLen(Data* d, int n);
+int IntLen(Data* d, int integer);
+void DataSearching(Data* d, int n);

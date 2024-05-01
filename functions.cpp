@@ -1,9 +1,20 @@
 #include "functions.h"
 #include<algorithm>
-
+#include<cstring>
 #pragma warning(disable:4996)
-int StrLen(char *str,int i, Data* d) {
+int TitleLen(char *str,int i, Data* d) {
 	char* iter = (char*)d[i].title;
+	int ret = 0;
+	while (*iter) {
+		iter++;
+		ret++;
+	}
+	int ans = ret;
+	return ans;
+}
+
+int AuthLen(char* str, int i, Data* d) {
+	char* iter = (char*)d[i].author;
 	int ret = 0;
 	while (*iter) {
 		iter++;
@@ -15,7 +26,7 @@ int StrLen(char *str,int i, Data* d) {
 int m_NazvLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (StrLen((char*)d[i].title,i,d)> sz) { sz = StrLen((char*)d[i].title, i, d); }
+		if (TitleLen((char*)d[i].title,i,d)> sz) { sz = TitleLen((char*)d[i].title, i, d); }
 	}
 	return sz;
 	
@@ -24,14 +35,15 @@ int m_NazvLen(Data* d, int n) {
 int m_AuthLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (StrLen((char*)d[i].author, i, d) > sz) { sz = StrLen((char*)d[i].author, i, d); }
+		if (TitleLen((char*)d[i].author, i, d) > sz) { sz = TitleLen((char*)d[i].author, i, d); }
 	}
 	return sz;
 }
 
 int m_PricLen(Data* d, int n) {
-	int sz = 0, temp = 0;
+	int sz = 0;
 	for (int i{}; i < n; i++) {
+		int temp=0;
 		int tempd = d[i].price;
 		while (tempd != 0) {
 			tempd /= 10;
@@ -42,11 +54,19 @@ int m_PricLen(Data* d, int n) {
 	return sz;
 }
 
-
+int IntLen(Data* d, int integer) {
+	int sz = 0,tempd = integer;
+	while (tempd != 0) {
+		tempd /= 10;
+		sz++;
+	}
+	return sz;
+}
 
 int m_AmouLen(Data* d, int n) {
-	int sz = 0, temp = 0;
+	int sz = 0;
 	for (int i{}; i < n; i++) {
+		int temp = 0;
 		int tempd = d[i].amount;
 		while (tempd != 0) {
 			tempd /= 10;
@@ -109,33 +129,31 @@ void ReadingData(Data* (&d), int& n, string fileName) {
 
 void Print(Data* d, int n) {
 		int pr_size=0, am_size=0, ar=0;
-		int arr_size = sizeof(d) / sizeof(d[0]);
-		while (arr_size != 0) {
-			arr_size /= 10;
+		int arr_size = sizeof(d) / sizeof(d[0]), temp_arr = sizeof(d) / sizeof(d[0]);
+		while (temp_arr != 0) {
+			temp_arr /= 10;
 			ar++;
 		}
-	for (int i = 0; i < n; i++) {
-		
 
-		
 
-		int risAm = 6;
-		if (m_AmouLen(d, n) > 10) { risAm += (m_AmouLen(d,n)*3)/2; }
-		if (m_AmouLen(d, n) <= 10) { risAm += 10; }
-		if (m_PricLen(d, n) > 4) { risAm += (m_PricLen(d, n)*3)/2; }
-		if (m_PricLen(d, n) <= 4) { risAm += 4; }
+		int risAm = 33;
+		if (m_AmouLen(d, n) > 10) { risAm += m_AmouLen(d, n); }
+		//if (m_AmouLen(d, n) <= 10) { risAm += 10; }
+		if (m_PricLen(d, n) > 4) { risAm += m_PricLen(d, n); }
+		//if (m_PricLen(d, n) <= 4) { risAm += 4; }
 		if (m_AuthLen(d, n) > 5) { risAm += m_AuthLen(d, n); }
-		if (m_AuthLen(d, n) <= 5) { risAm += 5; }
-		if (m_NazvLen(d, n) > 8) { risAm += (m_NazvLen(d, n)*3)/2; }
-		if (m_NazvLen(d, n) <= 8) { risAm += 8; }
-		if (ar > 1) { risAm += (ar*3)/2; }
-		if(ar == 1){risAm+=1;}
-		int k = 0;
-		for (int i = 0; i <=risAm; i++) {
-			cout << "-"; k++;
-		}
-		cout << k;
+		//if (m_AuthLen(d, n) <= 5) { risAm += 5; }
+		if (m_NazvLen(d, n) > 8) { risAm += m_NazvLen(d, n); }
+		//if (m_NazvLen(d, n) <= 8) { risAm += 8; }
+		if (ar > 1) { risAm += ar; }
 		
+		
+		for (int i = 0; i <= risAm; i++) {
+			cout << "-";
+		}
+		
+
+
 		//заголовок индекса
 		cout << endl;
 		cout << "|";
@@ -143,32 +161,103 @@ void Print(Data* d, int n) {
 		cout << "№";
 		for (int i = 0; i < ar / 2; i++) { cout << ' '; }
 		cout << "|";
-
+		int mN = m_NazvLen(d, n);
+		int mA = m_AuthLen(d, n);
+		int mAm = m_AmouLen(d, n);
+		int mP = m_PricLen(d, n);
+		
 		//заголовок названия
-		
-		for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
+		if (mN > 8) {
+			for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
+		}
 		cout << "Название";
-		for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
-		cout << "|";
-		
-		for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
-		cout << "Автор";
-		for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
-		cout << "|";
-		
-		for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
-		cout << "Количество";
-		for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
+		if (mN > 8) { for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; } }
 		cout << "|";
 
-		for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		if (mA > 5) { for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; } }
+		cout << "Автор";
+		if (mA > 5) {
+			for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
+		}
+		cout << "|";
+
+		if (mAm > 10) {
+			for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
+		}
+		cout << "Количество";
+		if (mAm > 10) {
+			for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
+		}
+		cout << "|";
+
+		if (mP > 4) {
+			for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		}
 		cout << "Цена";
-		for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		if (mP > 4) {
+			for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
+		}
 		cout << "|" << endl;
 
 		for (int i = 0; i <= risAm; i++) {
 			cout << "-";
 		}
+		cout << endl;
+	for (int i = 0; i < n; i++) {
+		//номер
+		cout <<"|" << i + 1 << "|";
+
+		//название
+		cout << d[i].title;
+		int j = TitleLen(d[i].title, i, d);
+		int colEnd = 8;
+		if (mN > 8) { colEnd += mN; }
+
+		for (j; j < colEnd; j++) {
+			cout << ' ';
+		}
+		cout << '|';
+
+		//автор
+		cout << d[i].author;
+		j = AuthLen(d[i].author, i, d);
+		colEnd = 5;
+		if (mA > 5) {
+			colEnd += mA;
+		}
+		for (; j < colEnd; j++) {
+			cout << ' ';
+		}
+		cout << '|';
+
+		//количество
+		cout << d[i].amount;
+		j = IntLen(d, d[i].amount);
+		colEnd = 10;
+		if (mAm > 10) {
+			colEnd += mAm;
+		}
+		for (; j < colEnd; j++) {
+			cout << " ";
+		}
+		cout << "|";
+
+		//Цена
+		cout << d[i].price;
+		j = IntLen(d, d[i].price);
+		colEnd = 3;
+		if (mP > 3) {
+			colEnd += mP;
+		}
+		for (; j < colEnd; j++) {
+			cout << " ";
+		}
+		cout << "|"<<endl;
+
+		for (int i = 0; i <= risAm; i++) {
+			cout << "-";
+		}cout << endl;
+		
 		/*cout << "Данные №" << i + 1 << ":"<<endl;
 		
 		cout << "Название: " << d[i].title<<endl;
@@ -212,7 +301,7 @@ void DeleteData(Data* (&d), int& n) {
 
 	if (_n >= 0 && _n < n) {
 		//временный массив
-		Data* buf = new Data[n];
+		Data* buf = d;//new Data[n];
 
 		Copy(buf, d, n);
 
@@ -231,7 +320,7 @@ void DeleteData(Data* (&d), int& n) {
 		}
 
 		system("cls");
-		delete[]buf;
+		//delete[]buf;
 		cout << "Данные удалены!" << endl;
 	}
 	else {
@@ -247,10 +336,11 @@ void Copy(Data* (&d_n), Data* (&d_o), int n) {
 
 void AddData(Data* (&d), int& n) {
 	//Временный массив данных
-	Data* buf;
-	buf = new Data[n];
+	Data* buf = d;
+	//buf = new Data[n];
 
 	Copy(buf, d, n);
+	
 	//выделяем новую память
 	n++;
 	d = new Data[n];
@@ -267,110 +357,105 @@ void AddData(Data* (&d), int& n) {
 	cout << "Введите цену: ";
 	cin >> d[n].price;
 
-	system("cls");
+	
 	cout << "Данные добавлены!" << endl;
-	delete[]buf;
+	system("cls");
+	//delete[]buf;
 }
 
 void DataSorting(Data* d, int n) {
 	
 	//временная переменная
-	Data buf;
-	char dasc;
-	cout << "сортировка по возрастанию? (y/n): ";
+	//Data buf;
+	int dasc,cs;
+	cout << "сортировка по возрастанию? 1 - да, 2 - нет: ";
 	cin >> dasc;
-	if (dasc == 'y') {
-		cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход" << endl;
-		switch (dasc) {
+	if (dasc == 1) {
+		cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход   ";
+		cin >> cs;
+		switch (cs) {
 		case 1:
 			//сортировка вставками
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].amount < d[j].amount;j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && d[j - 1].amount > d[j].amount;) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 2:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].price < d[j].price; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && d[j - 1].price > d[j].price; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 3:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].author < d[j].author; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && strcmp(d[j - 1].author,d[j].author)>0; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 4:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].title < d[j].title; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && strcmp(d[j - 1].title,d[j].title) > 0; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 		}
 	}
-	if (dasc == 'n') {
-		cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход" << endl;
-		switch (dasc) {
+	if (dasc == 2) {
+		cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход    ";
+		cin >> cs;
+		switch (cs) {
 		case 1:
 			//сортировка вставками
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].amount < d[j].amount;j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && d[j - 1].amount < d[j].amount;) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 2:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].price < d[j].price; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && d[j - 1].price < d[j].price; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 3:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].author < d[j].author; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && strcmp(d[j - 1].author,d[j].author)<0; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
 			break;
 
 		case 4:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].title < d[j].title; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
+			for (int i = 1; i < n; i++) {
+				for (int j = i; j > 0 && strcmp(d[j - 1].title , d[j].title)<0; ) {
+					dSwap(d[j], d[j - 1]);
+					j--;
 				}
 			}
 			cout << "Данные отсортированы!" << endl;
@@ -382,59 +467,59 @@ void DataSorting(Data* d, int n) {
 		}
 	}
 
-	if (dasc == 'n') {
-		cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход" << endl;
-		switch (dasc) {
-		case 1:
-			//сортировка вставками
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].amount > d[j].amount; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
-				}
-			}
-			cout << "Данные отсортированы!" << endl;
-			break;
+	//if (dasc == 'n') {
+	//	cout << "Введите критерий для сортировки: 1 - Кол-во; 2 - Цена; 3 - Автор; 4 - Название; 5 - Выход" << endl;
+	//	switch (dasc) {
+	//	case 1:
+	//		//сортировка вставками
+	//		for (int i = 0; i < n; i++) {
+	//			for (int j = i; j >= 0 && d[j - 1].amount > d[j].amount; j--) {
+	//				Copy(buf, d[j]);
+	//				Copy(d[j - 1], d[j]);
+	//				Copy(d[j], buf);
+	//			}
+	//		}
+	//		cout << "Данные отсортированы!" << endl;
+	//		break;
 
-		case 2:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].price > d[j].price; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
-				}
-			}
-			cout << "Данные отсортированы!" << endl;
-			break;
+	//	case 2:
+	//		for (int i = 0; i < n; i++) {
+	//			for (int j = i; j >= 0 && d[j - 1].price > d[j].price; j--) {
+	//				Copy(buf, d[j]);
+	//				Copy(d[j - 1], d[j]);
+	//				Copy(d[j], buf);
+	//			}
+	//		}
+	//		cout << "Данные отсортированы!" << endl;
+	//		break;
 
-		case 3:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].author > d[j].author; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
-				}
-			}
-			cout << "Данные отсортированы!" << endl;
-			break;
+	//	case 3:
+	//		for (int i = 0; i < n; i++) {
+	//			for (int j = i; j >= 0 && d[j - 1].author > d[j].author; j--) {
+	//				Copy(buf, d[j]);
+	//				Copy(d[j - 1], d[j]);
+	//				Copy(d[j], buf);
+	//			}
+	//		}
+	//		cout << "Данные отсортированы!" << endl;
+	//		break;
 
-		case 4:
-			for (int i = 0; i < n; i++) {
-				for (int j = i; j >= 0 && d[j - 1].title > d[j].title; j--) {
-					Copy(buf, d[j]);
-					Copy(d[j - 1], d[j]);
-					Copy(d[j], buf);
-				}
-			}
-			cout << "Данные отсортированы!" << endl;
-			break;
+	//	case 4:
+	//		for (int i = 0; i < n; i++) {
+	//			for (int j = i; j >= 0 && d[j - 1].title > d[j].title; j--) {
+	//				Copy(buf, d[j]);
+	//				Copy(d[j - 1], d[j]);
+	//				Copy(d[j], buf);
+	//			}
+	//		}
+	//		cout << "Данные отсортированы!" << endl;
+	//		break;
 
-		default:
-			cout << "Значение введено неверно!" << endl;
-			break;
-		}
-	}
+	//	default:
+	//		cout << "Значение введено неверно!" << endl;
+	//		break;
+	//	}
+	//}
 }
 
 void Copy(Data& d_n, Data& d_o){
@@ -442,6 +527,22 @@ void Copy(Data& d_n, Data& d_o){
 	strncpy(d_n.author, d_o.author, 32);
 	d_n.price = d_o.price;
 	strncpy(d_n.title, d_o.title, 32);
+}
+
+void dSwap(Data& d_n, Data& d_o) {
+	Data temp = d_o;
+	d_o = d_n;
+	d_n = temp;
+	/*Data temp = d_n;
+	d_n.amount = d_o.amount;
+	strncpy(d_n.author, d_o.author, 18);
+	d_n.price = d_o.price;
+	strncpy(d_n.title, d_o.title, 18);
+
+	d_o.amount = temp.amount;
+	strncpy(d_o.author, temp.author, 18);
+	d_o.price = temp.price;
+	strncpy(d_o.title, temp.title, 18);*/
 }
 
 void SavingData(Data* d, int n, char* fileName) {
@@ -466,4 +567,25 @@ void SavingData(Data* d, int n, char* fileName) {
 	}
 
 	record.close();
+}
+
+
+void DataSearching(Data* d, int n) {
+	char nazv[32];
+	Data* buf = new Data[n];
+	char flag = 0;
+	cout << "Введите название для поиска: ";
+	cin >> nazv;
+	for (int i = 0; i < n; i++) {
+		if (strcmp(nazv, d[i].title) == 0) {
+			buf[0] = d[i];
+			flag++;
+		}
+	}
+	if (flag == 0) { 
+		cout << "Данные не найдены..." << endl;
+		return;
+	}
+	Print(buf, n-flag);
+	delete[]buf;
 }

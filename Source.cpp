@@ -2,6 +2,7 @@
 #include "functions.h"
 using namespace std;
 int _stateMenu;
+
 void Menu() {
 	cout << "Выберите действие: " << endl
 		<< "(0) Выход из программы" << endl
@@ -12,6 +13,7 @@ void Menu() {
 		<< "(5) Добавление" << endl
 		<< "(6) Сортировка" << endl
 		<< "(7) Сохранение" << endl
+		<< "(8) Поиск" << endl
 		<< "Ваш выбор: ";
 	cin >> _stateMenu;
 }
@@ -29,7 +31,7 @@ int main() {
 		switch (_stateMenu) {
 		case 1:
 			system("cls"); //очистка консоли
-			cout << "Ввод вручную или из файла?: ";
+			cout << "Ввод вручную или из файла? (1/2): ";
 			cin >> _actions;
 			system("cls");
 
@@ -106,7 +108,7 @@ int main() {
 			system("cls");
 			if (amountOfData != 0) {
 				DataSorting(d, amountOfData);
-				amountOfData++;
+				
 			}
 			else {
 				cout << "Данные пусты!" << endl;
@@ -124,6 +126,21 @@ int main() {
 
 			if (amountOfData != 0) {
 				SavingData(d, amountOfData, fileName);
+			}
+			else {
+				cout << "Данные пусты!" << endl;
+			}
+
+			system("pause");
+			system("cls");
+			Menu();
+			break;
+
+		case 8:
+			system("cls");
+
+			if (amountOfData != 0) {
+				DataSearching(d, amountOfData);
 			}
 			else {
 				cout << "Данные пусты!" << endl;
