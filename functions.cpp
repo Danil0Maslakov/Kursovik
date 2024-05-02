@@ -589,3 +589,40 @@ void DataSearching(Data* d, int n) {
 	Print(buf, n-flag);
 	delete[]buf;
 }
+
+void FindMax(Data* d, int n) {
+	int a;
+	Data buf[1];
+	cout << "Максимальное количество или цена? (1/2): ";
+	cin >> a;
+	switch (a) {
+	case 1:
+		//сортировка вставками
+		for (int i = 1; i < n; i++) {
+			for (int j = i; j > 0 && d[j - 1].amount < d[j].amount;) {
+				dSwap(d[j], d[j - 1]);
+				j--;
+			}
+		}
+		buf[0] = d[0];
+		Print(buf, 1);
+		//delete[]buf;
+		break;
+
+	case 2:
+		for (int i = 1; i < n; i++) {
+			for (int j = i; j > 0 && d[j - 1].price < d[j].price; ) {
+				dSwap(d[j], d[j - 1]);
+				j--;
+			}
+		}
+		buf[0] = d[0];
+		Print(buf, 1);
+		//delete[]buf;
+		break;
+		
+	default:
+		cout << "Значение введено неверно..."; break;
+	}
+
+}

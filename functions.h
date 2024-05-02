@@ -33,3 +33,4 @@ int m_PricLen(Data* d, int n);
 int m_AmouLen(Data* d, int n);
 int IntLen(Data* d, int integer);
 void DataSearching(Data* d, int n);
+void FindMax(Data* d, int n);

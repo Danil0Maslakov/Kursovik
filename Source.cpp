@@ -14,6 +14,7 @@ void Menu() {
 		<< "(6) Сортировка" << endl
 		<< "(7) Сохранение" << endl
 		<< "(8) Поиск" << endl
+		<< "(9) Поиск максимального" << endl
 		<< "Ваш выбор: ";
 	cin >> _stateMenu;
 }
@@ -152,8 +153,24 @@ int main() {
 			Menu();
 			break;
 
+		case 9:
+			system("cls");
+
+			if (amountOfData != 0) {
+				FindMax(d, amountOfData);
+			}
+			else {
+				cout << "Данные пусты!" << endl;
+			}
+
+			system("pause");
+			system("cls");
+			Menu();
+			break;
+
 		default:
 			cout << "Неправильно введён номер действия!" << endl;
+			exit(0);
 			break;
 		}
 	}
