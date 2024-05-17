@@ -12,11 +12,11 @@ struct Data {
 	char author[32];
 	char title[32];
 };
-
+extern int is_saved;
 
 void DataEntry(Data* (&d), int& n); //Ввод данных вручную
-void ReadingData(Data* (&d), int& n, string fileName);//Чтение данных из файла
-void Print(Data* d, int n); //вывод данных
+void ReadingData(Data* (&d), int& n, char fileName[]);//Чтение данных из файла
+void Print(Data* d, int n, int is_saved); //вывод данных
 void DataChange(Data* (&d), int n);//изменение данных
 void DeleteData(Data* (&d), int& n);//удаление данных
 void Copy(Data* (&d_n), Data* (&d_o), int n); //копия данных

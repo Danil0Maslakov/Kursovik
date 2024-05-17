@@ -1,4 +1,5 @@
 #include "functions.h"
+#include<stdio.h>
 #include<algorithm>
 #include<cstring>
 #pragma warning(disable:4996)
@@ -26,7 +27,8 @@ int AuthLen(char* str, int i, Data* d) {
 int m_NazvLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (TitleLen((char*)d[i].title,i,d)> sz) { sz = TitleLen((char*)d[i].title, i, d); }
+		//if (TitleLen((char*)d[i].title,i,d)> sz) { sz = TitleLen((char*)d[i].title, i, d); }
+		if (strlen(d[i].title) > sz)sz = strlen(d[i].title);
 	}
 	return sz;
 	
@@ -35,10 +37,13 @@ int m_NazvLen(Data* d, int n) {
 int m_AuthLen(Data* d, int n) {
 	int sz = 0;
 	for (int i = 0; i < n; i++) {
-		if (TitleLen((char*)d[i].author, i, d) > sz) { sz = TitleLen((char*)d[i].author, i, d); }
+		//if (TitleLen((char*)d[i].author, i, d) > sz) { sz = TitleLen((char*)d[i].author, i, d); }
+		if (strlen(d[i].author) > sz)sz = strlen(d[i].author);
 	}
 	return sz;
 }
+
+
 
 int m_PricLen(Data* d, int n) {
 	int sz = 0;
@@ -85,39 +90,43 @@ void DataEntry(Data* (&d), int& n) {
 	d = new Data[n];
 
 	for (int i = 0; i < n; i++) {
-		cout << "Введите название: ";
-		cin >> d[i].title;
-		//cin.getline(d[i].title,32);
-
-		cout << "Введите имя автора: ";
-		cin >> d[i].author;
-		//cin.getline(d[i].author, 32);
-
 		cout << "Введите количество: ";
 		cin >> d[i].amount;
+		cin.ignore();
 
 		cout << "Введите цену: ";
 		cin >> d[i].price;
+		cin.ignore();
 
+
+		cout << "Введите название: ";
+		cin.getline(d[i].title,32,'\n');
+
+		cout << "Введите имя автора: ";
+		cin.getline(d[i].author,32,'\n');
+		
 		cout << "----------------------------------" << endl;
 	}
 
 }
 
-void ReadingData(Data* (&d), int& n, string fileName) {
-	ifstream reading(fileName);//поток для чтения
+void ReadingData(Data* (&d), int& n, char fileName[16]) {
+	ifstream reading(fileName);
 	
 	if (reading) {
 		reading >> n;
-
-		//Выделим память
+		
+		
 		d = new Data[n];
 
-		for (int i = 0; i < n; i++) {
-			reading >> d[i].title;
-			reading >> d[i].author;
-			reading >> d[i].amount;
-			reading >> d[i].price;
+		for (int i = 0; !reading.eof() && i < n; i++) {
+			reading >> d[i].amount >> d[i].price;
+			reading.clear();
+			reading.ignore();
+			reading.getline(d[i].author, 32);
+			reading.clear();
+			reading.getline(d[i].title, 32);
+			reading.clear();
 		}
 		cout << "Данные считаны!" << endl;
 	}
@@ -127,25 +136,36 @@ void ReadingData(Data* (&d), int& n, string fileName) {
 	reading.close();
 }
 
-void Print(Data* d, int n) {
+void Print(Data* d, int n,int is_saved) {
+	if (is_saved == 0) { cout << "*" << endl; }
+	int mN = m_NazvLen(d, n);
+	int mA = m_AuthLen(d, n);
+	int mAm = m_AmouLen(d, n);
+	int mP = m_PricLen(d, n);
+
 		int pr_size=0, am_size=0, ar=0;
 		int arr_size = sizeof(d) / sizeof(d[0]), temp_arr = sizeof(d) / sizeof(d[0]);
 		while (temp_arr != 0) {
 			temp_arr /= 10;
 			ar++;
 		}
+		int m_Stolb = max(max(max(mN, 8), max(mA, 5)), max(max(mAm, 10), max(mP, 4)));
 
-
-		int risAm = 33;
-		if (m_AmouLen(d, n) > 10) { risAm += m_AmouLen(d, n); }
-		//if (m_AmouLen(d, n) <= 10) { risAm += 10; }
-		if (m_PricLen(d, n) > 4) { risAm += m_PricLen(d, n); }
-		//if (m_PricLen(d, n) <= 4) { risAm += 4; }
-		if (m_AuthLen(d, n) > 5) { risAm += m_AuthLen(d, n); }
-		//if (m_AuthLen(d, n) <= 5) { risAm += 5; }
-		if (m_NazvLen(d, n) > 8) { risAm += m_NazvLen(d, n); }
-		//if (m_NazvLen(d, n) <= 8) { risAm += 8; }
-		if (ar > 1) { risAm += ar; }
+		int risAm = m_Stolb*4+6;
+		int mNs = m_Stolb - 8;
+		int mAs = m_Stolb - 5;
+		int mAms = m_Stolb - 10;
+		int mPs = m_Stolb - 4;
+		
+		//if (m_AmouLen(d, n) > 10) { risAm += m_AmouLen(d, n); }
+		////if (m_AmouLen(d, n) <= 10) { risAm += 10; }
+		//if (m_PricLen(d, n) > 4) { risAm += m_PricLen(d, n); }
+		////if (m_PricLen(d, n) <= 4) { risAm += 4; }
+		//if (m_AuthLen(d, n) > 5) { risAm += m_AuthLen(d, n); }
+		////if (m_AuthLen(d, n) <= 5) { risAm += 5; }
+		//if (m_NazvLen(d, n) > 8) { risAm += m_NazvLen(d, n); }
+		////if (m_NazvLen(d, n) <= 8) { risAm += 8; }
+		//if (ar > 1) { risAm += ar; }
 		
 		
 		for (int i = 0; i <= risAm; i++) {
@@ -161,42 +181,31 @@ void Print(Data* d, int n) {
 		cout << "№";
 		for (int i = 0; i < ar / 2; i++) { cout << ' '; }
 		cout << "|";
-		int mN = m_NazvLen(d, n);
-		int mA = m_AuthLen(d, n);
-		int mAm = m_AmouLen(d, n);
-		int mP = m_PricLen(d, n);
 		
+		
+
 		//заголовок названия
-		if (mN > 8) {
-			for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		
+		
 		cout << "Название";
-		if (mN > 8) { for (int i = 0; i < m_NazvLen(d, n) / 2; i++) { cout << ' '; } }
+		for (int i = 0; i < mNs; i++) { cout << " "; }
 		cout << "|";
 
-		if (mA > 5) { for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; } }
+		
 		cout << "Автор";
-		if (mA > 5) {
-			for (int i = 0; i < m_AuthLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		for (int i = 0; i < mAs; i++) { cout << " "; }
 		cout << "|";
 
-		if (mAm > 10) {
-			for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		
 		cout << "Количество";
-		if (mAm > 10) {
-			for (int i = 0; i < m_AmouLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		for (int i = 0; i < mAms; i++){ cout << " "; };
 		cout << "|";
 
-		if (mP > 4) {
-			for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		
 		cout << "Цена";
-		if (mP > 4) {
-			for (int i = 0; i < m_PricLen(d, n) / 2; i++) { cout << ' '; }
-		}
+		
+		for (int i = 0; i < mPs; i++) { cout << " "; }
+		
 		cout << "|" << endl;
 
 		for (int i = 0; i <= risAm; i++) {
@@ -204,16 +213,20 @@ void Print(Data* d, int n) {
 		}
 		cout << endl;
 	for (int i = 0; i < n; i++) {
+		
+		
+		
 		//номер
+		
 		cout <<"|" << i + 1 << "|";
 
 		//название
 		cout << d[i].title;
 		int j = TitleLen(d[i].title, i, d);
-		int colEnd = 8;
-		if (mN > 8) { colEnd += mN; }
+		
+		
 
-		for (j; j < colEnd; j++) {
+		for (; j < m_Stolb; j++) {
 			cout << ' ';
 		}
 		cout << '|';
@@ -221,11 +234,9 @@ void Print(Data* d, int n) {
 		//автор
 		cout << d[i].author;
 		j = AuthLen(d[i].author, i, d);
-		colEnd = 5;
-		if (mA > 5) {
-			colEnd += mA;
-		}
-		for (; j < colEnd; j++) {
+		
+		
+		for (; j < m_Stolb; j++) {
 			cout << ' ';
 		}
 		cout << '|';
@@ -233,11 +244,9 @@ void Print(Data* d, int n) {
 		//количество
 		cout << d[i].amount;
 		j = IntLen(d, d[i].amount);
-		colEnd = 10;
-		if (mAm > 10) {
-			colEnd += mAm;
-		}
-		for (; j < colEnd; j++) {
+		
+		
+		for (; j < m_Stolb; j++) {
 			cout << " ";
 		}
 		cout << "|";
@@ -245,11 +254,9 @@ void Print(Data* d, int n) {
 		//Цена
 		cout << d[i].price;
 		j = IntLen(d, d[i].price);
-		colEnd = 3;
-		if (mP > 3) {
-			colEnd += mP;
-		}
-		for (; j < colEnd; j++) {
+		
+		
+		for (; j < m_Stolb; j++) {
 			cout << " ";
 		}
 		cout << "|"<<endl;
@@ -278,14 +285,29 @@ void DataChange(Data* (&d), int n) {
 
 	//проверка, что ввели правильное значение
 	if (_n >= 0 && _n < n) {
-		cout << "Введите название: ";
-		cin >> d[_n].title;
+		/*cout << "Введите название: ";
+		cin.getline(d[_n].title,32);
 		cout << "Введите имя автора: ";
-		cin >> d[_n].author;
+		cin.getline(d[_n].author,32);
 		cout << "Введите количество: ";
 		cin >> d[_n].amount;
 		cout << "Введите цену: ";
+		cin >> d[_n].price;*/
+
+		cout << "Введите количество: ";
+		cin >> d[_n].amount;
+		cin.ignore();
+
+		cout << "Введите цену: ";
 		cin >> d[_n].price;
+		cin.ignore();
+
+
+		cout << "Введите название: ";
+		cin.getline(d[_n].title, 32, '\n');
+
+		cout << "Введите имя автора: ";
+		cin.getline(d[_n].author, 32, '\n');
 	}
 	else {
 		cout << "Номер был введён неверно..." << endl;
@@ -348,15 +370,28 @@ void AddData(Data* (&d), int& n) {
 	//Возвращаем данные
 	Copy(d, buf, --n);
 
-	cout << "Введите название: ";
-	cin >> d[n].title;
+	/*cout << "Введите название: ";
+	cin.getline(d[n].title,32);
 	cout << "Введите имя автора: ";
-	cin >> d[n].author;
+	cin.getline(d[n].author,32);
 	cout << "Введите количество: ";
 	cin >> d[n].amount;
 	cout << "Введите цену: ";
-	cin >> d[n].price;
+	cin >> d[n].price;*/
+	cout << "Введите количество: ";
+	cin >> d[n].amount;
+	cin.ignore();
 
+	cout << "Введите цену: ";
+	cin >> d[n].price;
+	cin.ignore();
+
+
+	cout << "Введите название: ";
+	cin.getline(d[n].title, 32, '\n');
+
+	cout << "Введите имя автора: ";
+	cin.getline(d[n].author, 32, '\n');
 	
 	cout << "Данные добавлены!" << endl;
 	system("cls");
@@ -551,15 +586,10 @@ void SavingData(Data* d, int n, char* fileName) {
 	if(record){
 		record << n << endl;
 		for (int i = 0; i < n; i++) {
-			record << d[i].title << endl;
-			record << d[i].author << endl;
 			record << d[i].amount << endl;
-			if (i < n - 1) {
-				record << d[i].price << endl;
-			}
-			else {
-				record << d[i].price;
-			}
+			record << d[i].price << endl;
+			record << d[i].title << endl;
+			record << d[i].author<<endl;
 		}
 	}
 	else {
@@ -575,18 +605,24 @@ void DataSearching(Data* d, int n) {
 	Data* buf = new Data[n];
 	char flag = 0;
 	cout << "Введите название для поиска: ";
-	cin >> nazv;
+	
+	cin.clear();
+	cin.ignore();
+	cin.getline(nazv, 32);
+	int w = 0;
 	for (int i = 0; i < n; i++) {
 		if (strcmp(nazv, d[i].title) == 0) {
-			buf[0] = d[i];
+			buf[w] = d[i];
 			flag++;
+			w++;
 		}
 	}
 	if (flag == 0) { 
 		cout << "Данные не найдены..." << endl;
 		return;
 	}
-	Print(buf, n-flag);
+	system("cls");
+	Print(buf, w,is_saved);
 	delete[]buf;
 }
 
@@ -605,7 +641,7 @@ void FindMax(Data* d, int n) {
 			}
 		}
 		buf[0] = d[0];
-		Print(buf, 1);
+		Print(buf, 1,is_saved);
 		//delete[]buf;
 		break;
 
@@ -617,7 +653,7 @@ void FindMax(Data* d, int n) {
 			}
 		}
 		buf[0] = d[0];
-		Print(buf, 1);
+		Print(buf, 1,is_saved);
 		//delete[]buf;
 		break;
 		
